@@ -5,11 +5,11 @@
         public int Id { get; set; }
         public string Name { get; set; }
 
-        public ICollection<Tasks> Tasks { get; set; }
+        public ICollection<AppTask> AppTasks { get; set; }
 
         public Project()
         {
-            Tasks = new HashSet<Tasks>();
+            AppTasks = new HashSet<AppTask>();
         }
     }
 }

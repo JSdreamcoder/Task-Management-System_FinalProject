@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TaskManagementSystem_FinalProject.Data;
 
@@ -11,9 +12,10 @@ using TaskManagementSystem_FinalProject.Data;
 namespace TaskManagementSystem_FinalProject.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220329002940_changeInitialSetting")]
+    partial class changeInitialSetting
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -168,14 +170,7 @@ namespace TaskManagementSystem_FinalProject.Data.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("AppUserId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Comment")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("CompletePercentage")
-                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -258,6 +253,29 @@ namespace TaskManagementSystem_FinalProject.Data.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("TaskManagementSystem_FinalProject.Models.Comment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("AppTasksId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AppTasksId")
+                        .IsUnique();
+
+                    b.ToTable("Comment");
+                });
+
             modelBuilder.Entity("TaskManagementSystem_FinalProject.Models.Project", b =>
                 {
                     b.Property<int>("Id")
@@ -333,11 +351,9 @@ namespace TaskManagementSystem_FinalProject.Data.Migrations
 
             modelBuilder.Entity("TaskManagementSystem_FinalProject.Models.AppTask", b =>
                 {
-                    b.HasOne("TaskManagementSystem_FinalProject.Models.AppUser", "AppUser")
-                        .WithMany("AppTasks")
-                        .HasForeignKey("AppUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.HasOne("TaskManagementSystem_FinalProject.Models.AppUser", null)
+                        .WithMany("Tasks")
+                        .HasForeignKey("AppUserId");
 
                     b.HasOne("TaskManagementSystem_FinalProject.Models.Project", "Project")
                         .WithMany("AppTasks")
@@ -345,9 +361,18 @@ namespace TaskManagementSystem_FinalProject.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("AppUser");
-
                     b.Navigation("Project");
+                });
+
+            modelBuilder.Entity("TaskManagementSystem_FinalProject.Models.Comment", b =>
+                {
+                    b.HasOne("TaskManagementSystem_FinalProject.Models.AppTask", "AppTasks")
+                        .WithOne("Comment")
+                        .HasForeignKey("TaskManagementSystem_FinalProject.Models.Comment", "AppTasksId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AppTasks");
                 });
 
             modelBuilder.Entity("TaskManagementSystem_FinalProject.Models.Project", b =>
@@ -357,11 +382,17 @@ namespace TaskManagementSystem_FinalProject.Data.Migrations
                         .HasForeignKey("AppUserId");
                 });
 
+            modelBuilder.Entity("TaskManagementSystem_FinalProject.Models.AppTask", b =>
+                {
+                    b.Navigation("Comment")
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("TaskManagementSystem_FinalProject.Models.AppUser", b =>
                 {
-                    b.Navigation("AppTasks");
-
                     b.Navigation("Projects");
+
+                    b.Navigation("Tasks");
                 });
 
             modelBuilder.Entity("TaskManagementSystem_FinalProject.Models.Project", b =>

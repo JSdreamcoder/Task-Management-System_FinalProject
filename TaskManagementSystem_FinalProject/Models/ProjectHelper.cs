@@ -1,6 +1,21 @@
-﻿namespace TaskManagementSystem_FinalProject.Models
+﻿using Microsoft.AspNetCore.Authorization;
+
+namespace TaskManagementSystem_FinalProject.Models
 {
-    public class ProjectHelper : BaseUser
+    [Authorize(Roles = "ProejectManager")]
+    public class ProjectHelper : IHelper
     {
+        public void Add()
+        {
+
+        }
+        public void Delete()
+        {
+
+        }
+        public void Update()
+        {
+
+        }
     }
 }
