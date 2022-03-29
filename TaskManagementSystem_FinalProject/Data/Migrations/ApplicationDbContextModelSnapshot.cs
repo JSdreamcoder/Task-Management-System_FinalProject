@@ -190,7 +190,7 @@ namespace TaskManagementSystem_FinalProject.Data.Migrations
 
                     b.HasIndex("ProjectId");
 
-                    b.ToTable("AppTask");
+                    b.ToTable("AppTask", (string)null);
                 });
 
             modelBuilder.Entity("TaskManagementSystem_FinalProject.Models.AppUser", b =>
@@ -277,7 +277,7 @@ namespace TaskManagementSystem_FinalProject.Data.Migrations
 
                     b.HasIndex("AppUserId");
 
-                    b.ToTable("Project");
+                    b.ToTable("Project", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
