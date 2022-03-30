@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -11,6 +12,7 @@ using TaskManagementSystem_FinalProject.Models;
 
 namespace TaskManagementSystem_FinalProject.Controllers
 {
+    [Authorize(Roles ="ProjectManager")]
     public class ProjectHelperController : Controller
     {
         private readonly ApplicationDbContext _context;
