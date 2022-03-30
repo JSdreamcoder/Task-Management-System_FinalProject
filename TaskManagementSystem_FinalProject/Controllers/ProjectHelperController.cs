@@ -23,9 +23,25 @@ namespace TaskManagementSystem_FinalProject.Controllers
         }
 
         // GET: ProjectHelper
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(bool ishideComplete)
         {
-            return View(await _context.Project.ToListAsync());
+            var projects = await _context.Project.Include(p=>p.AppTasks).ToListAsync();
+            foreach (var project in projects)
+            {
+                if (ishideComplete == true)
+                {
+                    project.AppTasks = project.AppTasks.OrderByDescending(a=>a.CompletePercentage)
+                                                       .Where(a=>a.CompletePercentage < 100)
+                                                       .ToList();    
+                }else
+                {
+                    project.AppTasks = project.AppTasks.OrderByDescending(a => a.CompletePercentage)
+                                                       .ToList();
+                }
+            }
+            
+                
+            return View(projects);
         }
 
         // GET: ProjectHelper/Details/5
