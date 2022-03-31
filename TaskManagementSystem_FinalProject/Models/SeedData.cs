@@ -94,33 +94,52 @@ namespace TaskManagementSystem_FinalProject.Models
             {
                 var task1 = new AppTask();
                 task1.Name = "task1";
-                task1.ProjectId = context.Project.First(p=>p.Name== "Proeject1").Id;
+                task1.ProjectId = context.Project.First(p => p.Name == "Proeject1").Id;
+                task1.CompletePercentage = 30;
+                task1.AppUserId = context.AppUser.First(u => u.UserName == "developer1@mitt.ca").Id;
                 context.AppTask.Add(task1);
 
                 var task2 = new AppTask();
                 task2.Name = "task2";
                 task2.ProjectId = context.Project.First(p => p.Name == "Proeject1").Id;
+                task2.CompletePercentage = 70;
+                task2.AppUserId = context.AppUser.First(u => u.UserName == "developer1@mitt.ca").Id;
                 context.AppTask.Add(task2);
 
                 var task3 = new AppTask();
                 task3.Name = "task3";
                 task3.ProjectId = context.Project.First(p => p.Name == "Proeject1").Id;
+                task3.CompletePercentage = 100;
+                task3.AppUserId = context.AppUser.First(u => u.UserName == "developer1@mitt.ca").Id;
                 context.AppTask.Add(task3);
 
                 var task4 = new AppTask();
                 task4.Name = "task4";
                 task4.ProjectId = context.Project.First(p => p.Name == "Proeject2").Id;
+                task4.CompletePercentage = 10;
+                task4.AppUserId = context.AppUser.First(u => u.UserName == "developer2@mitt.ca").Id;
                 context.AppTask.Add(task4);
 
                 var task5 = new AppTask();
                 task5.Name = "task5";
-                task5.ProjectId = context.Project.First(p => p.Name == "Proeject2").Id; 
+                task5.ProjectId = context.Project.First(p => p.Name == "Proeject2").Id;
+                task5.CompletePercentage = 40;
+                task5.AppUserId = context.AppUser.First(u => u.UserName == "developer2@mitt.ca").Id;
                 context.AppTask.Add(task5);
 
                 var task6 = new AppTask();
                 task6.Name = "task6";
                 task6.ProjectId = context.Project.First(p => p.Name == "Proeject2").Id;
+                task6.CompletePercentage = 100;
+                task6.AppUserId = context.AppUser.First(u => u.UserName == "developer2@mitt.ca").Id;
                 context.AppTask.Add(task6);
+
+                var task7 = new AppTask();
+                task7.Name = "task7";
+                task7.ProjectId = context.Project.First(p => p.Name == "Proeject2").Id;
+                task7.CompletePercentage = 70;
+                task7.AppUserId = context.AppUser.First(u => u.UserName == "developer2@mitt.ca").Id;
+                context.AppTask.Add(task7);
             }
 
             context.SaveChanges();
