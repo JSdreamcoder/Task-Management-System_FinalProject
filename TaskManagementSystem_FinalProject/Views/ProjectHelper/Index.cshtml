@@ -1,4 +1,4 @@
-﻿@model IEnumerable<TaskManagementSystem_FinalProject.Models.Project>
+﻿@model ViewModel
 
 @{
     ViewData["Title"] = "Index";
@@ -10,16 +10,38 @@
     <a asp-action="Create">Create New</a>
 </p>
 <p>
-    <a asp-action="Index" asp-route-ishideComplete="false"
+    <a asp-action="Index" asp-route-ishideComplete="false" asp-route-priority=@ViewBag.Priority
     class="btn btn-outline-success">Show Complete Tasks</a>
-    <a asp-action="Index" asp-route-ishideComplete="true"
+
+    <a asp-action="Index" asp-route-ishideComplete="true" asp-route-priority=@ViewBag.Priority
     class="btn btn-outline-success">Hide Complete Tasks</a>
 </p>
+<div>
+    Sort:
+    <a asp-action="Index" asp-route-priority=Newest
+    asp-route-IsHideComplete=@ViewBag.IsHideComplete>Newest</a>
+
+    <a asp-action="Index" asp-route-priority=DeadLine
+    asp-route-IsHideComplete=@ViewBag.IsHideComplete>DeadLine</a>
+
+    <a asp-action="Index" asp-route-priority=Budget
+    asp-route-IsHideComplete=@ViewBag.IsHideComplete>Budget</a>
+    
+</div>
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Name)
+                Name
+            </th>
+            <th>
+                Budget
+            </th>
+            <th>
+                StartDate
+            </th>
+            <th>
+                DeadLine
             </th>
             <th>
                 Tasks
@@ -28,11 +50,20 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+@foreach (var item in Model.projects) {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.Name)
             </td>
+            <th>
+                $@item.Budget
+            </th>
+            <th>
+                @item.StartDate.ToString("dd MMMM yyyy")
+            </th>
+            <th>
+                @item.DeadLine.ToString("dd MMMM yyyy")
+            </th>
             <td>
                 @foreach(var task in item.AppTasks )
                 {

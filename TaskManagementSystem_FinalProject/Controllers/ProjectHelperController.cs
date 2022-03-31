@@ -23,25 +23,49 @@ namespace TaskManagementSystem_FinalProject.Controllers
         }
 
         // GET: ProjectHelper
-        public async Task<IActionResult> Index(bool ishideComplete)
+        public async Task<IActionResult> Index(bool ishideComplete,Priority priority)
         {
+            
             var projects = await _context.Project.Include(p=>p.AppTasks).ToListAsync();
+
+            //Whent ishideComplete is true, hide tasks with completepercentage is 100
             foreach (var project in projects)
             {
                 if (ishideComplete == true)
                 {
+                    ViewBag.IsHideComplete = ishideComplete;
                     project.AppTasks = project.AppTasks.OrderByDescending(a=>a.CompletePercentage)
                                                        .Where(a=>a.CompletePercentage < 100)
                                                        .ToList();    
                 }else
                 {
+                    ViewBag.IsHideComplete = ishideComplete;
                     project.AppTasks = project.AppTasks.OrderByDescending(a => a.CompletePercentage)
                                                        .ToList();
                 }
             }
+
+            //implement priority
+            if (priority == Priority.Newest)
+            {
+                ViewBag.Priority = priority;
+                projects = projects.OrderByDescending(p => p.StartDate).ToList();
+            }
+            else if (priority == Priority.Budget)
+            {
+                ViewBag.Priority = priority;
+                projects = projects.OrderByDescending(p => p.Budget).ToList();
+            }
+            else if (priority == Priority.DeadLine)
+            {
+                ViewBag.Priority = priority;
+                projects = projects.OrderBy(p => p.DeadLine).ToList();
+            }
+
+            var PriorityList = new Priority();
             
-                
-            return View(projects);
+            var viewModel = new ViewModel(PriorityList,projects);
+            return View(viewModel);
         }
 
         // GET: ProjectHelper/Details/5

@@ -81,10 +81,16 @@ namespace TaskManagementSystem_FinalProject.Models
             {
                 var project = new Project();
                 project.Name = "Proeject1";
+                project.Budget = 1000000;
+                project.StartDate = new DateTime(2022, 3, 1);
+                project.DeadLine = new DateTime(2022, 6, 1);
                 context.Project.Add(project);
 
                 var project2 = new Project();
                 project2.Name = "Proeject2";
+                project2.Budget = 2000000;
+                project.StartDate = new DateTime(2022, 2,15);
+                project2.DeadLine = new DateTime(2022, 10,15);
                 context.Project.Add(project2);
 
             }
