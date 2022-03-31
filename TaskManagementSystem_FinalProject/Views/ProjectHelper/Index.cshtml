@@ -18,15 +18,14 @@
 </p>
 <div>
     Sort:
-    <a asp-action="Index" asp-route-priority=Newest
+    <a asp-action="Index" asp-route-priority="Newest"
     asp-route-IsHideComplete=@ViewBag.IsHideComplete>Newest</a>
 
-    <a asp-action="Index" asp-route-priority=DeadLine
+    <a asp-action="Index" asp-route-priority="DeadLine"
     asp-route-IsHideComplete=@ViewBag.IsHideComplete>DeadLine</a>
 
-    <a asp-action="Index" asp-route-priority=Budget
+    <a asp-action="Index" asp-route-priority="Budget"
     asp-route-IsHideComplete=@ViewBag.IsHideComplete>Budget</a>
-    
 </div>
 <table class="table">
     <thead>
