@@ -28,6 +28,8 @@ namespace TaskManagementSystem_FinalProject.Controllers
             
             var projects = await _context.Project.Include(p=>p.AppTasks).ToListAsync();
 
+
+
             //Whent ishideComplete is true, hide tasks with completepercentage is 100
             foreach (var project in projects)
             {
