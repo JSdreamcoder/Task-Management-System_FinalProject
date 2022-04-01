@@ -26,11 +26,11 @@ namespace TaskManagementSystem_FinalProject.Controllers
         public async Task<IActionResult> Index(bool ishideComplete,Priority priority)
         {
             
-            var projects = await _context.Project.Include(p=>p.AppTasks).ToListAsync();
+            var projects = await _context.Project.Include(p=>p.AppTasks).ThenInclude(a=>a.AppUser).ToListAsync();
 
 
 
-            //Whent ishideComplete is true, hide tasks with completepercentage is 100
+            //When ishideComplete is true, hide tasks with completepercentage is 100
             foreach (var project in projects)
             {
                 if (ishideComplete == true)
@@ -59,6 +59,10 @@ namespace TaskManagementSystem_FinalProject.Controllers
                 projects = projects.OrderByDescending(p => p.Budget).ToList();
             }
             else if (priority == Priority.DeadLine)
+            {
+                ViewBag.Priority = priority;
+                projects = projects.OrderBy(p => p.DeadLine).ToList();
+            }else if (priority == null)
             {
                 ViewBag.Priority = priority;
                 projects = projects.OrderBy(p => p.DeadLine).ToList();
@@ -131,7 +135,7 @@ namespace TaskManagementSystem_FinalProject.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] Project project)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Budget,StartDate,DeadLine")] Project project)
         {
             if (id != project.Id)
             {
