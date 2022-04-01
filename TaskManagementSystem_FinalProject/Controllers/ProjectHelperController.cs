@@ -62,6 +62,10 @@ namespace TaskManagementSystem_FinalProject.Controllers
             {
                 ViewBag.Priority = priority;
                 projects = projects.OrderBy(p => p.DeadLine).ToList();
+            }else if (priority == null)
+            {
+                ViewBag.Priority = priority;
+                projects = projects.OrderBy(p => p.DeadLine).ToList();
             }
 
             var PriorityList = new Priority();
