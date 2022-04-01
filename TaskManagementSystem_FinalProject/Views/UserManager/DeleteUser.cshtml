@@ -1,0 +1,18 @@
+﻿@model SelectList
+@{
+    ViewData["Title"] = "DeleteUser";
+}
+
+<h1>DeleteUser</h1>
+<ul>
+    @foreach(var user in ViewBag.AllUsers)
+    {
+        <li>@user.Email</li>
+    }
+</ul>
+
+<h3>Select for deleting User from database</h3>
+<form asp-action="DeleteUser" method="post">
+    <select name="username" asp-items=Model></select>
+    <button type="submit">Submit</button>
+</form>

@@ -1,0 +1,21 @@
+﻿@model SelectList
+@{
+    ViewData["Title"] = "AssignRoleToUser";
+}
+
+<h1>AssignRoleToUser</h1>
+
+<h3>User Name : @ViewBag.User.Email</h3>
+<h4>@ViewBag.User.Email Roles : 
+    @foreach(var role in ViewBag.UserRoles)
+    {
+        <div>
+        @role
+        </div>
+    }
+</h4>
+<div></div>
+<form method="post" asp-action="AssignRoleToUser" asp-route-userid=@ViewBag.User.Id>
+<select name="role" asp-items=Model></select>
+<button type="submit">Submit</button>
+</form>

@@ -1,0 +1,23 @@
+﻿@model SelectList
+@{
+    ViewData["Title"] = "DeleteRole";
+}
+
+
+
+<h1>DeleteRole</h1>
+<h3>All roles :</h3>
+<ul>
+    @foreach(var role in ViewBag.AllRoles)
+    {
+        <li>@role.Name</li>
+    }
+</ul>
+
+
+<h3>Select the role for deleting</h3>
+<form method="post" asp-action="DeleteRole">
+    <select name="role" asp-items=Model></select>
+    <button type="submit">Submit</button>
+</form>
+
