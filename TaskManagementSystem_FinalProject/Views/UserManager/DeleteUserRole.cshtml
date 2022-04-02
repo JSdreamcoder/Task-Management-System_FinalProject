@@ -1,0 +1,19 @@
+﻿@model SelectList
+@{
+    ViewData["Title"] = "DeleteUserRole";
+}
+
+<h1>DeleteUserRole</h1>
+
+<h3>User Name : @ViewBag.User.Email</h3>
+<h4>@ViewBag.User.Email Roles : 
+    @foreach(var role in ViewBag.UserRoles)
+    {
+        @role
+    }
+</h4>
+<div></div>
+<form method="post" asp-action="DeleteUserRole" asp-route-userid=@ViewBag.User.Id>
+<select name="role" asp-items=Model></select>
+<button type="submit">Submit</button>
+</form>

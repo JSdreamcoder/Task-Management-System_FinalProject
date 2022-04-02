@@ -5,6 +5,7 @@ using TaskManagementSystem_FinalProject.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
+
 // Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>

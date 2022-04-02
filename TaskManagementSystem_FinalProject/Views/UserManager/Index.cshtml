@@ -1,0 +1,55 @@
+﻿@model Dictionary<AppUser,IList<string>>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>All Users with roles</h1>
+
+<p>
+     <a asp-action="CreateRole">Create Role</a>
+</p>
+<p>
+     <a asp-action="DeleteRole">Delete Role</a>
+</p>
+<p>
+     <a asp-action="DeleteUser">Delete User</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Name
+            </th>
+            <th>
+                Roles
+            </th>
+           
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @item.Key.Email
+            </td>
+            <td>
+                @foreach(var role in item.Value)
+                {
+                    <div>
+                    @role     
+                    </div>
+                }
+            </td>
+            
+           
+            <td>
+               <a asp-action="AssignRoleToUser" asp-route-userid="@item.Key.Id">Assign Role To User</a> |
+                <a asp-action="DeleteUserRole" asp-route-userid="@item.Key.Id">Delete Role From User</a> |
+               
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
