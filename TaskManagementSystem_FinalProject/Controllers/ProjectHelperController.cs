@@ -104,6 +104,7 @@ namespace TaskManagementSystem_FinalProject.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name")] Project project)
+
         {
             if (ModelState.IsValid)
             {
