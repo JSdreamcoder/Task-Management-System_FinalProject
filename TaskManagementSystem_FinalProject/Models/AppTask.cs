@@ -11,8 +11,8 @@ namespace TaskManagementSystem_FinalProject.Models
         public int CompletePercentage { get; set; } = 0;
         public string? Comment { get; set; }
 
-        public int ProjectId { get; set; }
-        public Project Project { get; set; }
+        public int? ProjectId { get; set; }
+        public Project? Project { get; set; }
 
          
         

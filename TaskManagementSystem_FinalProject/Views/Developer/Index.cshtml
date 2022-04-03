@@ -1,0 +1,60 @@
+﻿@model IEnumerable<TaskManagementSystem_FinalProject.Models.AppTask>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>@ViewBag.UserName '  All Tasks</h1>
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CompletePercentage)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Comment)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Project)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AppUser)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CompletePercentage)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Comment)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Project.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AppUser.UserName)
+            </td>
+            <td>
+                <a asp-action="EditPercentage" asp-route-id="@item.Id">Edit Complete Percentage</a> |
+                @if(item.CompletePercentage == 100)
+                {
+                    <a asp-action="EditComment" asp-route-id="@item.Id">Leave comment</a> 
+                }
+              
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
