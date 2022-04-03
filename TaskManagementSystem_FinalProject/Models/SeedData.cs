@@ -27,7 +27,7 @@ namespace TaskManagementSystem_FinalProject.Models
             }
 
 
-
+            // for seed
             if (!context.Users.Any())
             {
                 AppUser user = new AppUser()
