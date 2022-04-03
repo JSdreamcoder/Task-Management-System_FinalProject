@@ -20,7 +20,7 @@ namespace TaskManagementSystem_FinalProject.Controllers
             _context = context;
         }
 
-        // GET: Developer
+        // GET: Developers
         public async Task<IActionResult> Index()
         
         {
