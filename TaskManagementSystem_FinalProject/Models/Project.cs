@@ -1,6 +1,6 @@
 ﻿namespace TaskManagementSystem_FinalProject.Models
 {
-    public class Project
+    public class Project//项目
     {
         public int Id { get; set; }
         public string Name { get; set; }
