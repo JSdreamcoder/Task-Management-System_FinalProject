@@ -23,6 +23,24 @@ namespace TaskManagementSystem_FinalProject.Controllers
         // GET: TaskHelper123
 
        
+        public IActionResult AssignTaskToProject(int id)
+        {
+            var task = _context.AppTask.First(t=> t.Id == id);
+            ViewBag.TaskId = task.Id;
+            ViewBag.TaskName = task.Name;
+            var allprojects = _context.Project;
+            var projectList = new SelectList(allprojects, "Id","Name");
+            return View(projectList);
+        }
+
+        public IActionResult AssignTaskToProjectPost(int projectid, int taskid)
+        {
+            var task = _context.AppTask.First(t => t.Id == taskid);
+            task.Project = projectid;
+            _context.Update(task);
+            _context.SaveChanges();
+            return RedirectToAction("Index");
+        }
         public async Task<IActionResult> Index()
         {
             var applicationDbContext = _context.AppTask.Include(a => a.AppUser).Include(a => a.Project);

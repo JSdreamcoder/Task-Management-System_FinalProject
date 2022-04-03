@@ -46,9 +46,10 @@
                 @Html.DisplayFor(modelItem => item.Project.Id)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.AppUser.Id)
+                @Html.DisplayFor(modelItem => item.AppUser.UserName)
             </td>
             <td>
+                <a asp-action="AssignnTaskToProject" asp-route-id="@item.Id">AssignnTaskToProject</a> |
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
                 <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>

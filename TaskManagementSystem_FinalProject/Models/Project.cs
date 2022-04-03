@@ -11,5 +11,10 @@
         {
             AppTasks = new HashSet<AppTask>();
         }
+
+        public static implicit operator Project(int v)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
