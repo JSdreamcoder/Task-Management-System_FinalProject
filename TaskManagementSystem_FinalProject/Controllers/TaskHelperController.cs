@@ -51,6 +51,7 @@ namespace TaskManagementSystem_FinalProject.Controllers
             return RedirectToAction("Index");
         }
         // GET: TaskHelper/Details/5
+        
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)

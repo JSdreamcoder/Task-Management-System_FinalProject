@@ -23,7 +23,7 @@ namespace TaskManagementSystem_FinalProject.Controllers
         }
 
         // GET: Developers
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         
         {
             
@@ -31,7 +31,9 @@ namespace TaskManagementSystem_FinalProject.Controllers
             ViewBag.UserName = userName;
             var user = _context.AppUser.First(u=>u.UserName == userName);
             var userId = user.Id;
-            var applicationDbContext = _context.AppTask.Include(a => a.AppUser).Include(a => a.Project)
+            var applicationDbContext = _context.AppTask.Include(a => a.AppUser)
+                                                       .Include(a => a.Project)
+                                                       .Include(a=>a.Notifications)
                                                        .Where(t=>t.AppUserId == userId);
 
             var today = DateTime.Now;
@@ -39,20 +41,39 @@ namespace TaskManagementSystem_FinalProject.Controllers
             
             foreach (var task in applicationDbContext)
             {
-                var diffOfDates = task.DeadLine - today ;
-               
-                var number = diffOfDates.Days;
-
-                if (number <= 0)
-                {
-                    numberOfNotice++;
-                }
+                numberOfNotice += task.Notifications.Where(n => n.Isopen == false).Count();
             }
             ViewBag.NumberOfNotice = numberOfNotice;
-            return View(await applicationDbContext.ToListAsync());
+            return View(applicationDbContext.ToList());
         }
 
-        public async Task<IActionResult> NoticePage()
+        public  IActionResult NoticePage()
+        {
+            var userName = User.Identity.Name;
+            ViewBag.UserName = userName;
+            var user = _context.AppUser.First(u => u.UserName == userName);
+            var userId = user.Id;
+            
+            var notices = _context.AppUser.Include(a => a.AppTasks).ThenInclude(t => t.Notifications)
+                                          .First(a => a.UserName == userName);
+            return View(notices);
+        }
+        [HttpPost]
+        public IActionResult NoticePage(int id)
+        {
+            var notice = _context.Notification.First(u => u.Id == id);
+            notice.Isopen = true;  
+            _context.Update(notice);
+            _context.SaveChanges();
+            return RedirectToAction("NoticePage");
+        }
+
+        public IActionResult CreateTaskNotice()
+        {
+            return View();
+        }
+        [HttpPost]
+        public IActionResult CreateTaskNotice(int id)
         {
             var userName = User.Identity.Name;
             ViewBag.UserName = userName;
@@ -60,31 +81,61 @@ namespace TaskManagementSystem_FinalProject.Controllers
             var userId = user.Id;
             var applicationDbContext = _context.AppTask.Include(a => a.AppUser).Include(a => a.Project)
                                                        .Where(t => t.AppUserId == userId);
-
+            var notifications = _context.Notification;
+            var listOfTaskIdinNotification = notifications.Select(n=>n.AppTaskId).ToList();
             var today = DateTime.Now.Date;
-            int numberOfNotice = 0;
-            List<string> notices = new List<string>();
+            
+
             foreach (var task in applicationDbContext)
             {
                 var diffOfDates = task.DeadLine - today;
-
                 var number = diffOfDates.Days;
 
-                if (number == 1)
+                if (listOfTaskIdinNotification.Contains(task.Id))
                 {
-                    notices.Add($"{task.Name} Deadline remains 1 day"); 
+
+                    var notice = notifications.First(n => n.AppTaskId == task.Id);
+                    if (number == 1)
+                    {
+                        notice.Description = $"{task.Name} dead-Line remains 1 day";
+
+                    }
+                    else if (number == 0)
+                    {
+                        notice.Description = $"{task.Name} dead-Line is today";
+                    }
+                    else if (number < 0)
+                    {
+                        notice.Description = $"{task.Name} dead-Line is passed";
+                    }
+                    _context.Update(notice);
                 }
-                else if (number == 0)
+                else
                 {
-                    notices.Add($"{task.Name} Deadline is today");
+
+                    var newNotice = new Notification();
+                    newNotice.AppTaskId = task.Id;
+                    if (number == 1)
+                    {
+                        newNotice.Description = $"{task.Name} dead-Line remains 1 day";
+                    }
+                    else if (number == 0)
+                    {
+                        newNotice.Description = $"{task.Name} dead-Line is today";
+
+                    }
+                    else if (number < 0)
+                    {
+                        newNotice.Description = $"{task.Name} dead-Line is passed";
+
+                    }
+                    _context.Notification.Add(newNotice);
                 }
-                else if (number < 0)
-                {
-                    notices.Add($"{task.Name} Deadline was passed");
-                }
+                
             }
-            ViewBag.NumberOfNotice = numberOfNotice;
-            return View(notices);
+
+            _context.SaveChanges();
+            return RedirectToAction("Index");
         }
 
         // GET: Developer/Details/5
