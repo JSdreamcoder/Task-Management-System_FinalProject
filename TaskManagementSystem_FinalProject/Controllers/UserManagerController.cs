@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -12,6 +13,7 @@ using TaskManagementSystem_FinalProject.Models;
 
 namespace TaskManagementSystem_FinalProject.Controllers
 {
+    [Authorize(Roles = "ProjectManager")]
     public class UserManagerController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -198,7 +200,8 @@ namespace TaskManagementSystem_FinalProject.Controllers
                 var Alluser = _context.AppUser;
                 var userList = new SelectList(Alluser, "Email", "Email");
                 return View(userList);
-
+                var users = _context.AppUser;
+                var users1 = _context.AppUser.ToList();
             }
             catch (Exception ex)
             {
