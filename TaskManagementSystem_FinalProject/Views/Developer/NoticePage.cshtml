@@ -1,13 +1,43 @@
-﻿@model List<string>
+﻿@model AppUser
 
 
 
 <h1>@ViewBag.UserName '  List of Notice </h1>
 
-<ul>
-    @foreach(var s in Model)
+
+<table>
+<thead>
+    <tr>
+        <th> description</th>
+        <th></th>
+    </tr>
+</thead>
+<tbody>
+   
+    @foreach(var T in Model.AppTasks)
     {
-        <li><h3>@s</h3></li>
+   <tr>
+       @foreach(var notice in T.Notifications)
+        {
+            if(notice.Isopen==false)
+            {
+                
+              <td>
+                <h3>@notice.Description</h3>
+              </td>
+              <td>
+             <form asp-action="NoticePage" method="post">
+                 <input name="id" value=@notice.Id type="hidden">
+                 <button type ="submit">Confirm</button>
+             </form>
+              </td>
+             
+            }
+        }
+   </tr>
     }
-</ul>
+   
+</tbody>
+</table>
+<a asp-action="Index">Back To Developer page</a>
 

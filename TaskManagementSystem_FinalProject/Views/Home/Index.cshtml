@@ -18,6 +18,7 @@
 <a asp-controller="TaskHelper" class="btn btn-outline-success">4.Task Helper</a>
 </div>
 <br/>
-<div>
-<a asp-controller="Developer" class="btn btn-outline-success">3.Developer Page</a>
-</div>
+
+<form asp-action="CreateTaskNotice" asp-controller="Developer" method="post">
+     <button class="btn btn-outline-success" type="submit">3.Developer Page</button>
+</form>

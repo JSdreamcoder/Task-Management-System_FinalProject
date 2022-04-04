@@ -18,6 +18,6 @@ namespace TaskManagementSystem_FinalProject.Data
 
         public DbSet<AppTask> AppTask { get; set; }
         
-        
+        public DbSet<Notification> Notification { get; set; }
     }
 }

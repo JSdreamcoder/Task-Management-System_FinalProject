@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TaskManagementSystem_FinalProject.Data;
 
@@ -11,9 +12,10 @@ using TaskManagementSystem_FinalProject.Data;
 namespace TaskManagementSystem_FinalProject.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220404182317_CreateNotificationModel")]
+    partial class CreateNotificationModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -267,7 +269,7 @@ namespace TaskManagementSystem_FinalProject.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int?>("AppTaskId")
+                    b.Property<int>("AppTaskId")
                         .HasColumnType("int");
 
                     b.Property<string>("Description")
@@ -277,7 +279,7 @@ namespace TaskManagementSystem_FinalProject.Data.Migrations
                     b.Property<bool>("Isopen")
                         .HasColumnType("bit");
 
-                    b.Property<int?>("ProjectId")
+                    b.Property<int>("ProjectId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -389,12 +391,16 @@ namespace TaskManagementSystem_FinalProject.Data.Migrations
             modelBuilder.Entity("TaskManagementSystem_FinalProject.Models.Notification", b =>
                 {
                     b.HasOne("TaskManagementSystem_FinalProject.Models.AppTask", "AppTask")
-                        .WithMany("Notifications")
-                        .HasForeignKey("AppTaskId");
+                        .WithMany()
+                        .HasForeignKey("AppTaskId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("TaskManagementSystem_FinalProject.Models.Project", "Project")
-                        .WithMany("Notifications")
-                        .HasForeignKey("ProjectId");
+                        .WithMany()
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("AppTask");
 
@@ -408,11 +414,6 @@ namespace TaskManagementSystem_FinalProject.Data.Migrations
                         .HasForeignKey("AppUserId");
                 });
 
-            modelBuilder.Entity("TaskManagementSystem_FinalProject.Models.AppTask", b =>
-                {
-                    b.Navigation("Notifications");
-                });
-
             modelBuilder.Entity("TaskManagementSystem_FinalProject.Models.AppUser", b =>
                 {
                     b.Navigation("AppTasks");
@@ -423,8 +424,6 @@ namespace TaskManagementSystem_FinalProject.Data.Migrations
             modelBuilder.Entity("TaskManagementSystem_FinalProject.Models.Project", b =>
                 {
                     b.Navigation("AppTasks");
-
-                    b.Navigation("Notifications");
                 });
 #pragma warning restore 612, 618
         }

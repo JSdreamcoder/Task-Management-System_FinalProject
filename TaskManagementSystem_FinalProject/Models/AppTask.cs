@@ -20,6 +20,13 @@ namespace TaskManagementSystem_FinalProject.Models
         public string? AppUserId { get; set; }
         public AppUser? AppUser { get; set; }
 
+        public ICollection<Notification> Notifications { get; set; }
+
+        public AppTask()
+        {
+            Notifications = new HashSet<Notification>(); 
+        }
+
 
     }
 }
