@@ -93,6 +93,7 @@ namespace TaskManagementSystem_FinalProject.Controllers
 
                 if (listOfTaskIdinNotification.Contains(task.Id))
                 {
+
                     var notice = notifications.First(n => n.AppTaskId == task.Id);
                     if (number == 1)
                     {
@@ -111,6 +112,7 @@ namespace TaskManagementSystem_FinalProject.Controllers
                 }
                 else
                 {
+
                     var newNotice = new Notification();
                     newNotice.AppTaskId = task.Id;
                     if (number == 1)
