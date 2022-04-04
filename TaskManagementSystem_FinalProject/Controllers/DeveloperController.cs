@@ -72,15 +72,15 @@ namespace TaskManagementSystem_FinalProject.Controllers
 
                 if (number == 1)
                 {
-                    notices.Add($"{task.Name} dead-Line remains 1 day"); 
+                    notices.Add($"{task.Name} Deadline remains 1 day"); 
                 }
                 else if (number == 0)
                 {
-                    notices.Add($"{task.Name} dead-Line is today");
+                    notices.Add($"{task.Name} Deadline is today");
                 }
                 else if (number < 0)
                 {
-                    notices.Add($"{task.Name} dead-Line is passed");
+                    notices.Add($"{task.Name} Deadline was passed");
                 }
             }
             ViewBag.NumberOfNotice = numberOfNotice;
