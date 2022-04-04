@@ -1,0 +1,13 @@
+﻿@model List<string>
+
+
+
+<h1>@ViewBag.UserName '  List of Notice </h1>
+
+<ul>
+    @foreach(var s in Model)
+    {
+        <li><h3>@s</h3></li>
+    }
+</ul>
+

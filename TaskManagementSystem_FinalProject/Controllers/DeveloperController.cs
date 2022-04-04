@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -11,6 +12,7 @@ using TaskManagementSystem_FinalProject.Models;
 
 namespace TaskManagementSystem_FinalProject.Controllers
 {
+    [Authorize(Roles ="Developer")]
     public class DeveloperController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -31,7 +33,58 @@ namespace TaskManagementSystem_FinalProject.Controllers
             var userId = user.Id;
             var applicationDbContext = _context.AppTask.Include(a => a.AppUser).Include(a => a.Project)
                                                        .Where(t=>t.AppUserId == userId);
+
+            var today = DateTime.Now;
+            int numberOfNotice = 0;
+            
+            foreach (var task in applicationDbContext)
+            {
+                var diffOfDates = task.DeadLine - today ;
+               
+                var number = diffOfDates.Days;
+
+                if (number <= 0)
+                {
+                    numberOfNotice++;
+                }
+            }
+            ViewBag.NumberOfNotice = numberOfNotice;
             return View(await applicationDbContext.ToListAsync());
+        }
+
+        public async Task<IActionResult> NoticePage()
+        {
+            var userName = User.Identity.Name;
+            ViewBag.UserName = userName;
+            var user = _context.AppUser.First(u => u.UserName == userName);
+            var userId = user.Id;
+            var applicationDbContext = _context.AppTask.Include(a => a.AppUser).Include(a => a.Project)
+                                                       .Where(t => t.AppUserId == userId);
+
+            var today = DateTime.Now.Date;
+            int numberOfNotice = 0;
+            List<string> notices = new List<string>();
+            foreach (var task in applicationDbContext)
+            {
+                var diffOfDates = task.DeadLine - today;
+
+                var number = diffOfDates.Days;
+
+                if (number == 1)
+                {
+                    notices.Add($"{task.Name} dead-Line remains 1 day"); 
+                }
+                else if (number == 0)
+                {
+                    notices.Add($"{task.Name} dead-Line is today");
+                }
+                else if (number < 0)
+                {
+                    notices.Add($"{task.Name} dead-Line is passed");
+                }
+            }
+            ViewBag.NumberOfNotice = numberOfNotice;
+            return View(notices);
         }
 
         // GET: Developer/Details/5

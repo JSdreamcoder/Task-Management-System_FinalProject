@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TaskManagementSystem_FinalProject.Data;
 
@@ -11,9 +12,10 @@ using TaskManagementSystem_FinalProject.Data;
 namespace TaskManagementSystem_FinalProject.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220404013713_addDeadline")]
+    partial class addDeadline
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -176,10 +178,11 @@ namespace TaskManagementSystem_FinalProject.Data.Migrations
                     b.Property<int>("CompletePercentage")
                         .HasColumnType("int");
 
-                    b.Property<DateTime?>("DeadLine")
+                    b.Property<DateTime>("DeadLine")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("ProjectId")

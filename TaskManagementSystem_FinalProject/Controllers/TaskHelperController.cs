@@ -11,6 +11,7 @@ using TaskManagementSystem_FinalProject.Models;
 
 namespace TaskManagementSystem_FinalProject.Controllers
 {
+    [Authorize(Roles = "ProjectManager")]
     public class TaskHelperController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -23,7 +24,9 @@ namespace TaskManagementSystem_FinalProject.Controllers
         // GET: TaskHelper
         public async Task<IActionResult> Index()
         {
+
             var applicationDbContext = _context.AppTask.Include(a => a.AppUser).Include(a => a.Project);
+           
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -71,6 +74,8 @@ namespace TaskManagementSystem_FinalProject.Controllers
         {
             ViewData["AppUserId"] = new SelectList(_context.AppUser, "Id", "Id");
             ViewData["ProjectId"] = new SelectList(_context.Project, "Id", "Id");
+            int zero = 0;
+            ViewBag.Zero = zero;
             return View();
         }
 
@@ -79,16 +84,16 @@ namespace TaskManagementSystem_FinalProject.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,CompletePercentage,Comment,ProjectId,AppUserId")] AppTask appTask)
+        public async Task<IActionResult> Create([Bind("DeadLine,Id,Name,CompletePercentage,Comment,ProjectId,AppUserId")] AppTask appTask)
         {
-            if (ModelState.IsValid)
-            {
+            //if (ModelState.IsValid)
+            //{
                 _context.Add(appTask);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
-            }
-            ViewData["AppUserId"] = new SelectList(_context.AppUser, "Id", "Id", appTask.AppUserId);
-            ViewData["ProjectId"] = new SelectList(_context.Project, "Id", "Id", appTask.ProjectId);
+            //}
+            ViewData["AppUserId"] = new SelectList(_context.AppUser, "Id", "UserName");
+            ViewData["ProjectId"] = new SelectList(_context.Project, "Id", "Name");
             return View(appTask);
         }
 
@@ -105,8 +110,8 @@ namespace TaskManagementSystem_FinalProject.Controllers
             {
                 return NotFound();
             }
-            ViewData["AppUserId"] = new SelectList(_context.AppUser, "Id", "Id", appTask.AppUserId);
-            ViewData["ProjectId"] = new SelectList(_context.Project, "Id", "Id", appTask.ProjectId);
+            ViewData["AppUserId"] = new SelectList(_context.AppUser, "Id", "UserName");
+            ViewData["ProjectId"] = new SelectList(_context.Project, "Id", "Name");
             return View(appTask);
         }
 
@@ -115,7 +120,7 @@ namespace TaskManagementSystem_FinalProject.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,CompletePercentage,Comment,ProjectId,AppUserId")] AppTask appTask)
+        public async Task<IActionResult> Edit(int id, [Bind("DeadLine,Id,Name,CompletePercentage,Comment,ProjectId,AppUserId")] AppTask appTask)
         {
             if (id != appTask.Id)
             {
