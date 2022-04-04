@@ -39,6 +39,11 @@
                 <span asp-validation-for="AppUserId" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for="DeadLine" class="control-label"></label>
+                <input asp-for="DeadLine" class="form-control" type="date" asp-items="ViewBag.AppUserId"></input>
+                <span asp-validation-for="AppUserId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
         </form>
