@@ -26,7 +26,9 @@ namespace TaskManagementSystem_FinalProject.Controllers
         public async Task<IActionResult> Index(bool ishideComplete,Priority priority)
         {
             
-            var projects = await _context.Project.Include(p=>p.AppTasks).ThenInclude(a=>a.AppUser).ToListAsync();
+            var projects = await _context.Project.Include(p=>p.AppTasks).ThenInclude(a=>a.AppUser)
+                                                 .Include(p=>p.Notifications)
+                                                 .ToListAsync();
 
 
 
@@ -69,11 +71,64 @@ namespace TaskManagementSystem_FinalProject.Controllers
             }
 
             var PriorityList = new Priority();
-            
+            int numOfNoticefromProject = 0;
+            foreach (var project in projects)
+            {
+                numOfNoticefromProject += project.Notifications.Count();
+            }
+            ViewBag.NumOfNotice = numOfNoticefromProject +
+                                 _context.Notification.Where(n => n.AppUserId != null && n.Isopen == false).Count();
+                                 
+                                
             var viewModel = new ViewModel(PriorityList,projects);
             return View(viewModel);
         }
 
+        public IActionResult Notification()
+        {
+            var notices = _context.Notification.Include(n=>n.Project).Include(n=>n.AppUser)
+                                               .Where(n => n.AppUserId != null || n.ProjectId!=null).ToList();
+            return View(notices);
+        }
+        [HttpPost]
+        public IActionResult Notification(int id, bool isOpen )
+        {
+            var notification = _context.Notification.First(n=>n.Id == id);  
+            notification.Isopen = isOpen;
+            _context.Update(notification);
+            _context.SaveChanges();
+            return RedirectToAction("Notification");
+        }
+        
+        public IActionResult CreateNotificationFromProject(int id)
+        {
+            return View();
+        }
+        [HttpPost]
+        public IActionResult CreateNotificationFromProject()
+        {
+            var today = DateTime.Now.Date;
+            var allprojectwitTasks = _context.Project.Include(p => p.AppTasks)
+                                                     .Include(p=>p.Notifications);
+            
+            foreach (var project in allprojectwitTasks)
+            {
+                var completepercentages = project.AppTasks.Select(a => a.CompletePercentage).FirstOrDefault(c=> c==100);
+                var newNotice = new Notification();
+                var descriptions = project.Notifications.Select(n=>n.Description);
+                if ((project.DeadLine - today).Days < 0 && completepercentages != 100)
+                {
+                    newNotice.ProjectId= project.Id;
+                    newNotice.Description = $"{project.Name} deadline was passed with some incomplete tasks";
+                    if(!descriptions.Contains(newNotice.Description))
+                       _context.Notification.Add(newNotice);
+                }
+                
+            }
+            _context.SaveChanges();
+            return RedirectToAction("Index");
+        }
+         
         // GET: ProjectHelper/Details/5
         public async Task<IActionResult> Details(int? id)
         {

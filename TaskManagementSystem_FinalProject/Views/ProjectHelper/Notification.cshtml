@@ -1,0 +1,55 @@
+﻿@model IEnumerable<TaskManagementSystem_FinalProject.Models.Notification>
+
+@{
+    ViewData["Title"] = "Notification";
+}
+
+<h1>Notification</h1>
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Description
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Isopen)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Project)
+            </th>
+            
+            <th>
+                Devoloper
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Isopen)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Project.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AppUser.UserName)
+            </td>
+            <td>
+                <form asp-action="Notification" method="post">
+                    <input type="hidden" name="isOpen" value="true">
+                    <input type="hidden" name="id" value=@item.Id>
+                    <button type="submit">Open</button>
+                </form>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+<a asp-action="Index">Back to the Project helper page</a>
