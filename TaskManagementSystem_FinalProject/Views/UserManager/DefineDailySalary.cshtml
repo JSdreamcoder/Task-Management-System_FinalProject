@@ -1,0 +1,13 @@
+﻿
+@{
+    ViewData["Title"] = "DefineDailySalary";
+}
+
+<h1>DefineDailySalary</h1>
+
+Difine Salary
+<form asp-action="DefineDailySalary" methid="post">
+    <input name ="id" type="hidden" value=@ViewBag.UserId />
+    <input name = "salary" type="number"/>
+    <button type="submit">Submit</button>
+</form>

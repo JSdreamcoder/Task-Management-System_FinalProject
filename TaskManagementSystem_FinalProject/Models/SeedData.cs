@@ -37,6 +37,7 @@ namespace TaskManagementSystem_FinalProject.Models
                     UserName = "projectmanager@mitt.ca",
                     NormalizedUserName = "PROJECTMANAGER@MITT.CA",
                     EmailConfirmed = true,
+                    DailySalary = 1000,
                     SecurityStamp = Guid.NewGuid().ToString()
                 };
                 AppUser user2 = new AppUser()
@@ -46,6 +47,7 @@ namespace TaskManagementSystem_FinalProject.Models
                     UserName = "developer1@mitt.ca",
                     NormalizedUserName = "DEVELOPER1@MITT.CA",
                     EmailConfirmed = true,
+                    DailySalary = 200,
                     SecurityStamp = Guid.NewGuid().ToString()
                 };
                 AppUser user3 = new AppUser()
@@ -55,6 +57,7 @@ namespace TaskManagementSystem_FinalProject.Models
                     UserName = "developer2@mitt.ca",
                     NormalizedUserName = "DEVELOPER2@MITT.CA",
                     EmailConfirmed = true,
+                    DailySalary = 200,
                     SecurityStamp = Guid.NewGuid().ToString()
                 };
                 var passwordHasher = new PasswordHasher<AppUser>();

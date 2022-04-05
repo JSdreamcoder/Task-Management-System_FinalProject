@@ -24,7 +24,9 @@
             <th>
                 Roles
             </th>
-           
+           <th>
+                Daily Salary
+            </th>
             <th></th>
         </tr>
     </thead>
@@ -42,12 +44,15 @@
                     </div>
                 }
             </td>
+            <td>
+                @item.Key.DailySalary
+            </td>
             
            
             <td>
                <a asp-action="AssignRoleToUser" asp-route-userid="@item.Key.Id">Assign Role To User</a> |
                 <a asp-action="DeleteUserRole" asp-route-userid="@item.Key.Id">Delete Role From User</a> |
-               
+                 <a asp-action="DefineDailySalary" asp-route-id="@item.Key.Id">Define Daily Salary</a> |
             </td>
         </tr>
 }

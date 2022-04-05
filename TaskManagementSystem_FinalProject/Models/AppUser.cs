@@ -5,6 +5,7 @@ namespace TaskManagementSystem_FinalProject.Models
 {
     public class AppUser : IdentityUser
     {
+        public int? DailySalary { get; set; }
         public ICollection<Project> Projects { get; set; }
         
         public ICollection<AppTask> AppTasks { get; set; }

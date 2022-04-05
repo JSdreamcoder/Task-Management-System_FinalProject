@@ -217,6 +217,11 @@ namespace TaskManagementSystem_FinalProject.Controllers
             {
                 var user = _context.AppUser.First(u => u.Email == username);
                 var tasksOfUser = _context.AppTask.Where(t => t.AppUserId == user.Id).ToList();
+                var notification = _context.Notification.Where(t => t.AppUserId == user.Id).ToList();
+                foreach (var n in notification)
+                {
+                    n.AppUserId = default;
+                }
                 foreach (var task in tasksOfUser)
                 {
                     task.AppUserId = null;
@@ -230,6 +235,21 @@ namespace TaskManagementSystem_FinalProject.Controllers
             {
                 return BadRequest(ex.Message);
             }
+        }
+
+        public IActionResult DefineDailySalary(string id)
+        {
+            ViewBag.UserId = id;
+            return View();
+        }
+        [HttpPost]
+        public IActionResult DefineDailySalary(string id, int salary)
+        {
+            var user = _context.AppUser.First(u => u.Id == id);
+            user.DailySalary = salary;
+            _context.Update(user);
+            _context.SaveChanges();
+            return RedirectToAction("Index");
         }
     }
 }
