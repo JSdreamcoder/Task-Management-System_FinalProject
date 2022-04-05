@@ -264,6 +264,10 @@ namespace TaskManagementSystem_FinalProject.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditPercentage(int id, [Bind("Id,Name,CompletePercentage,Comment,ProjectId,AppUserId")] AppTask appTask)
         {
+
+           
+
+
             if (id != appTask.Id)
             {
                 return NotFound();
@@ -273,7 +277,29 @@ namespace TaskManagementSystem_FinalProject.Controllers
             {
                 try
                 {
+                   //notice when task complete
+                    if (appTask.CompletePercentage == 100)
+                    {
+                        var newNotice = new Notification();
+                        newNotice.Description = $"{appTask.Name} is completed";
+                        newNotice.ProjectId = appTask.ProjectId;
+                        newNotice.AppUserId = appTask.AppUserId;
+                        _context.Notification.Add(newNotice);
+                        
+                    }
                     _context.Update(appTask);
+                    await _context.SaveChangesAsync();
+
+                    //notice when project complete
+                    var projectId = appTask.ProjectId;
+                    var project = _context.Project.Include(p => p.AppTasks).First(p => p.Id == projectId);
+                    if (project.AppTasks.All(a => a.CompletePercentage == 100))
+                    {
+                        var newNotice = new Notification();
+                        newNotice.Description = $"{project.Name} is completed";
+                        newNotice.ProjectId = projectId;
+                        _context.Notification.Add(newNotice);
+                    }
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -291,6 +317,9 @@ namespace TaskManagementSystem_FinalProject.Controllers
             }
             ViewData["AppUserId"] = new SelectList(_context.AppUser, "Id", "Id", appTask.AppUserId);
             ViewData["ProjectId"] = new SelectList(_context.Project, "Id", "Id", appTask.ProjectId);
+            //notification with completepercentage is 100
+           
+
             return View(appTask);
         }
 
@@ -314,19 +343,21 @@ namespace TaskManagementSystem_FinalProject.Controllers
             return View(appTask);
         }
 
-        public IActionResult UrgentNote(string userId)
+        public IActionResult UrgentNote(string userId,int taskId)
         {
             
             ViewBag.AppUserId = userId;
-            
+            ViewBag.TaskId = taskId;
             return View();
         }
         [HttpPost]
-        public IActionResult UrgentNote(string userId,string description)
+        public IActionResult UrgentNote(string userId,string description,int taskId)
         {
+            var task = _context.AppTask.First(a => a.Id == taskId);
             var notice = new Notification();
             notice.AppUserId = userId;
-            notice.Description = description;   
+            notice.Description = description;
+            notice.ProjectId = task.ProjectId;
             _context.Notification.Add(notice);
             _context.SaveChanges();
             return View();
