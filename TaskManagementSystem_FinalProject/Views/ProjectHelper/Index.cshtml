@@ -6,7 +6,7 @@
 
 <h1>Index</h1>
 <div>
-    <a asp-action="Notification" class="btn btn-info">@ViewBag.NumOfNotice Notification</a>
+    <a asp-action="Notification" class="btn btn-info" asp-route-nNumber=@ViewBag.NumOfNotice>@ViewBag.NumOfNotice Notification</a>
 </div>
 <p>
     <a asp-action="Create">Create New</a>

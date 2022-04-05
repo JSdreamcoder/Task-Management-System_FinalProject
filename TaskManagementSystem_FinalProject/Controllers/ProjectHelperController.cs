@@ -84,10 +84,13 @@ namespace TaskManagementSystem_FinalProject.Controllers
             return View(viewModel);
         }
 
-        public IActionResult Notification()
+        public IActionResult Notification(int nNumber)
         {
             var notices = _context.Notification.Include(n=>n.Project).Include(n=>n.AppUser)
-                                               .Where(n => n.AppUserId != null || n.ProjectId!=null).ToList();
+                                               .Where(n => n.AppUserId != null || n.ProjectId!=null)
+                                               .OrderBy(n=>n.Isopen)
+                                               .ToList();
+            ViewBag.NumOfNotice = nNumber;
             return View(notices);
         }
         [HttpPost]
