@@ -60,7 +60,8 @@
             </td>
             <td>
                 <a asp-action="EditPercentage" asp-route-id="@item.Id">Edit Complete Percentage</a> |
-                <a asp-action="UrgentNote" asp-route-userId=@ViewBag.UserId>Urgent Note</a> |
+                <a asp-action="UrgentNote" asp-route-userId=@ViewBag.UserId
+                   asp-route-taskId="@item.Id">Urgent Note</a> |
                  
                 @if(item.CompletePercentage == 100)
                 {

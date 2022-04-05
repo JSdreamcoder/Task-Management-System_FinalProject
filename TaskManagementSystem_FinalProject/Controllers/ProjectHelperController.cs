@@ -74,12 +74,12 @@ namespace TaskManagementSystem_FinalProject.Controllers
             int numOfNoticefromProject = 0;
             foreach (var project in projects)
             {
-                numOfNoticefromProject += project.Notifications.Count();
+                numOfNoticefromProject += project.Notifications.Where(n=>n.Isopen==false).Count();
             }
-            ViewBag.NumOfNotice = numOfNoticefromProject +
-                                 _context.Notification.Where(n => n.AppUserId != null && n.Isopen == false).Count();
-                                 
-                                
+            ViewBag.NumOfNotice = numOfNoticefromProject;
+
+
+
             var viewModel = new ViewModel(PriorityList,projects);
             return View(viewModel);
         }
@@ -107,10 +107,10 @@ namespace TaskManagementSystem_FinalProject.Controllers
         [HttpPost]
         public IActionResult CreateNotificationFromProject()
         {
+            //making notification with passed deadline with incomplited tasks of project
             var today = DateTime.Now.Date;
             var allprojectwitTasks = _context.Project.Include(p => p.AppTasks)
                                                      .Include(p=>p.Notifications);
-            
             foreach (var project in allprojectwitTasks)
             {
                 var completepercentages = project.AppTasks.Select(a => a.CompletePercentage).FirstOrDefault(c=> c==100);
@@ -123,6 +123,13 @@ namespace TaskManagementSystem_FinalProject.Controllers
                     if(!descriptions.Contains(newNotice.Description))
                        _context.Notification.Add(newNotice);
                 }
+                
+            }
+
+            //making notification with complete task or project
+            var alltasks = _context.AppTask;
+            foreach (var task in alltasks)
+            {
                 
             }
             _context.SaveChanges();
