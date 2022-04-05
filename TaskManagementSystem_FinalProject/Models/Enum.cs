@@ -5,5 +5,7 @@
         Newest,
         DeadLine,
         Budget,
+        ExceededCost,
+        Finish
     }
 }

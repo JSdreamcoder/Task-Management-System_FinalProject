@@ -28,6 +28,7 @@ namespace TaskManagementSystem_FinalProject.Controllers
             
             var projects = await _context.Project.Include(p=>p.AppTasks).ThenInclude(a=>a.AppUser)
                                                  .Include(p=>p.Notifications)
+                                                 .Include(p=>p.ProejectAndUsers).ThenInclude(pu=>pu.AppUser)
                                                  .ToListAsync();
 
 
@@ -64,7 +65,41 @@ namespace TaskManagementSystem_FinalProject.Controllers
             {
                 ViewBag.Priority = priority;
                 projects = projects.OrderBy(p => p.DeadLine).ToList();
-            }else if (priority == null)
+            }
+            else if (priority == Priority.ExceededCost)
+            {
+                ViewBag.Priority = priority;
+                var temp = new List<Project>();
+                foreach (var p in projects)
+                {
+                    if (p.Budget > (p.ProejectAndUsers.Select(pu => pu.AppUser).Select(A => A.DailySalary).Sum() * ((DateTime.Now.Date - p.StartDate).Days)))
+                    {
+                        temp.Add(p);
+                    }
+
+                }
+                foreach (var p in temp)
+                {
+                    projects.Remove(p);
+                }
+            }
+            else if (priority == Priority.Finish)
+            {
+                ViewBag.Priority = priority;
+                var temp = new List<Project>();
+                foreach (var p in projects)
+                {
+                    if (!p.AppTasks.All(a=>a.CompletePercentage==100))
+                    {
+                        temp.Add(p);
+                    }
+                }
+                foreach (var p in temp)
+                {
+                    projects.Remove(p);
+                }
+            }
+            else if (priority == null)
             {
                 ViewBag.Priority = priority;
                 projects = projects.OrderBy(p => p.DeadLine).ToList();
@@ -77,6 +112,8 @@ namespace TaskManagementSystem_FinalProject.Controllers
                 numOfNoticefromProject += project.Notifications.Where(n=>n.Isopen==false).Count();
             }
             ViewBag.NumOfNotice = numOfNoticefromProject;
+            
+            
 
 
 
@@ -280,6 +317,31 @@ namespace TaskManagementSystem_FinalProject.Controllers
                 }
             }
             return View(passedDeadLineTasks);
+        }
+
+        public IActionResult AssignUser(int id)
+        {
+            var Project = _context.Project.First(P => P.Id == id);
+
+            var users = _context.Users.Include(u => u.ProjectAndUsers)
+                                      .Where(u => !u.ProjectAndUsers.Select(p=>p.ProjectId).Contains(id));
+
+            ViewBag.UserList = new SelectList(users,"Id", "UserName");
+            ViewBag.ProjectId = Project.Id; 
+            return View();
+        }
+        [HttpPost]
+        public IActionResult AssignUser(int projectId, string userId, 
+                                        DateTime startDate, DateTime endDate)
+        {
+            var newPUser = new ProjectAndUser();
+            newPUser.ProjectId = projectId; 
+            newPUser.AppUserId = userId;
+            newPUser.StartDate = startDate;
+            newPUser.EndDate = endDate;
+            _context.ProjectAndUser.Add(newPUser);
+            _context.SaveChanges();
+            return RedirectToAction("Index");
         }
     }
 }

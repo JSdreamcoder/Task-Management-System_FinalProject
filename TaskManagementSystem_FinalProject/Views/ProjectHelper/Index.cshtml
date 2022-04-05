@@ -22,6 +22,13 @@
     class="btn btn-outline-success">Hide Complete Tasks</a>
 </p>
 <div>
+    Pick List:
+    <a asp-action="Index" asp-route-priority="ExceededCost"
+    asp-route-IsHideComplete=@ViewBag.IsHideComplete>Eceeded Cost Project</a>
+    <a asp-action="Index" asp-route-priority="Finish"
+    asp-route-IsHideComplete=@ViewBag.IsHideComplete>Finished Project</a>
+</div>
+<div>
     Sort:
     <a asp-action="Index" asp-route-priority="Newest"
     asp-route-IsHideComplete=@ViewBag.IsHideComplete>Newest</a>
@@ -41,6 +48,13 @@
             <th>
                 Budget
             </th>
+            
+            <th>
+                Total Cost
+            </th>
+            <th>
+                Project Members
+            </th>
             <th>
                 StartDate
             </th>
@@ -59,15 +73,35 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Name)
             </td>
-            <th>
+            <td>
                 $@item.Budget
-            </th>
-            <th>
+            </td>
+            <td>
+                <div>
+                @(item.ProejectAndUsers.Select(pu=>pu.AppUser).Select(A=>A.DailySalary).Sum()*((DateTime.Now.Date-item.StartDate).Days))
+                </div>
+                @if((item.ProejectAndUsers.Select(pu=>pu.AppUser).Select(A=>A.DailySalary).Sum()*((DateTime.Now.Date-item.StartDate).Days)) > item.Budget)
+                {
+                     
+                  <p class="btn btn-outline-danger" >Exceeded!</p> 
+                    }
+                  
+                </td>
+            <td>
+                @foreach(var pu in item.ProejectAndUsers)
+                {
+                  <div >
+                  @pu.AppUser.UserName       
+
+                  </div>
+                 }
+            </td>
+            <td>
                 @item.StartDate.ToString("MM/dd/yyyy")
-            </th>
-            <th>
+            </td>
+            <td>
                 @item.DeadLine.ToString("MM/dd/yyyy")
-            </th>
+            </td>
             <td>
                 @foreach(var task in item.AppTasks )
                 {
@@ -83,8 +117,8 @@
                 }
             </td>
             <td>
+                <a asp-action="AssignUser" asp-route-id="@item.Id">Assign User</a> |
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                
                 <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
             </td>
         </tr>
