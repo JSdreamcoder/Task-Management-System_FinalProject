@@ -6,19 +6,21 @@
     <h1 class="display-4">Task Management System</h1>
     
 </div>
-<div>
-<a asp-controller="ProjectHelper" class="btn btn-outline-success">1.Project Helper</a>
-</div>
+<form asp-action="CreateNotificationFromProject" asp-controller="ProjectHelper" method="post">
+     <button class="btn btn-outline-success" type="submit">1.ProjectHelper Page</button>
+</form>
 <br/>
 <div>
 <a asp-controller="UserManager" class="btn btn-outline-success">2.UserManager Helper</a>
 </div>
 <br/>
 <div>
-<a asp-controller="TaskHelper" class="btn btn-outline-success">4.Task Helper</a>
+<a asp-controller="TaskHelper" class="btn btn-outline-success">3.Task Helper</a>
 </div>
 <br/>
 
 <form asp-action="CreateTaskNotice" asp-controller="Developer" method="post">
-     <button class="btn btn-outline-success" type="submit">3.Developer Page</button>
+     <button class="btn btn-outline-success" type="submit">4.Developer Page</button>
 </form>
+
+

@@ -44,6 +44,7 @@ namespace TaskManagementSystem_FinalProject.Controllers
                 numberOfNotice += task.Notifications.Where(n => n.Isopen == false).Count();
             }
             ViewBag.NumberOfNotice = numberOfNotice;
+            ViewBag.UserId=userId;
             return View(applicationDbContext.ToList());
         }
 
@@ -311,6 +312,24 @@ namespace TaskManagementSystem_FinalProject.Controllers
             }
 
             return View(appTask);
+        }
+
+        public IActionResult UrgentNote(string userId)
+        {
+            
+            ViewBag.AppUserId = userId;
+            
+            return View();
+        }
+        [HttpPost]
+        public IActionResult UrgentNote(string userId,string description)
+        {
+            var notice = new Notification();
+            notice.AppUserId = userId;
+            notice.Description = description;   
+            _context.Notification.Add(notice);
+            _context.SaveChanges();
+            return View();
         }
 
         // POST: Developer/Delete/5

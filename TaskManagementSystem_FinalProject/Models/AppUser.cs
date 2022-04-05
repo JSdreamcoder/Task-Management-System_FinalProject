@@ -9,11 +9,12 @@ namespace TaskManagementSystem_FinalProject.Models
         
         public ICollection<AppTask> AppTasks { get; set; }
 
-
+        public ICollection<Notification> Notifications { get; set; }
         public AppUser()
         {
            Projects = new HashSet<Project>();
            AppTasks = new HashSet<AppTask>();
+           Notifications = new HashSet<Notification>();
         }
 
         

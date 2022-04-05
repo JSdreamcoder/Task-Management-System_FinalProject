@@ -14,5 +14,8 @@
         public int? AppTaskId { get; set; }
         public AppTask? AppTask { get; set; }
 
+        public string? AppUserId { get; set; }
+        public AppUser? AppUser { get; set; }
+
     }
 }
