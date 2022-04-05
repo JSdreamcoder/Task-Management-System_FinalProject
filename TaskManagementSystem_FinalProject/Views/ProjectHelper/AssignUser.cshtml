@@ -1,0 +1,15 @@
+﻿
+
+
+<h1>AssignUser</h1>
+
+Select User for Assigning
+<form asp-action="AssignUser" method="post">
+    <input type="hidden" value=@ViewBag.ProjectId name="projectId" />
+    <select name="userId" asp-items=@ViewBag.UserList></select>
+
+    <input name="startDate" type="date" placeholder="Start Date"/>
+    <input name="EndDate" type="date" placeholder="End Date"/>
+    <button type="submit">Submit</button>
+</form>
+
