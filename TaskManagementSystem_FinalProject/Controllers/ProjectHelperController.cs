@@ -101,7 +101,7 @@ namespace TaskManagementSystem_FinalProject.Controllers
             }
             else if (priority == null)
             {
-                ViewBag.Priority = priority;
+               // ViewBag.Priority = priority;
                 projects = projects.OrderBy(p => p.DeadLine).ToList();
             }
 
@@ -114,7 +114,7 @@ namespace TaskManagementSystem_FinalProject.Controllers
             ViewBag.NumOfNotice = numOfNoticefromProject;
             
             
-
+           
 
 
             var viewModel = new ViewModel(PriorityList,projects);
@@ -144,6 +144,7 @@ namespace TaskManagementSystem_FinalProject.Controllers
         {
             return View();
         }
+        [AllowAnonymous]
         [HttpPost]
         public IActionResult CreateNotificationFromProject()
         {
@@ -153,10 +154,10 @@ namespace TaskManagementSystem_FinalProject.Controllers
                                                      .Include(p=>p.Notifications);
             foreach (var project in allprojectwitTasks)
             {
-                var completepercentages = project.AppTasks.Select(a => a.CompletePercentage).FirstOrDefault(c=> c==100);
+                var IsAllcompletedProject = project.AppTasks.Select(a => a.CompletePercentage).All(c=> c==100);
                 var newNotice = new Notification();
                 var descriptions = project.Notifications.Select(n=>n.Description);
-                if ((project.DeadLine - today).Days < 0 && completepercentages != 100)
+                if ((project.DeadLine - today).Days < 0 && IsAllcompletedProject==false)
                 {
                     newNotice.ProjectId= project.Id;
                     newNotice.Description = $"{project.Name} deadline was passed with some incomplete tasks";
@@ -194,19 +195,18 @@ namespace TaskManagementSystem_FinalProject.Controllers
             return View(project);
         }
 
-        // GET: ProjectHelper/Create
+        // GET: Projectstest/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: ProjectHelper/Create
+        // POST: Projectstest/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name")] Project project)
-
+        public async Task<IActionResult> Create([Bind("Id,Name,Budget,StartDate,DeadLine")] Project project)
         {
             if (ModelState.IsValid)
             {
@@ -291,7 +291,11 @@ namespace TaskManagementSystem_FinalProject.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var project = await _context.Project.FindAsync(id);
+            var project = _context.Project.Include(p=>p.AppTasks).FirstOrDefault(p=>p.Id==id);
+            foreach (var task in project.AppTasks)
+            {
+                _context.AppTask.Remove(task);
+            }
             _context.Project.Remove(project);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
@@ -342,6 +346,13 @@ namespace TaskManagementSystem_FinalProject.Controllers
             _context.ProjectAndUser.Add(newPUser);
             _context.SaveChanges();
             return RedirectToAction("Index");
+        }
+
+        public IActionResult TotalCostDetails(int Id)
+        {
+            var project = _context.Project.Include(p=>p.ProejectAndUsers).ThenInclude(pa=>pa.AppUser)
+                                          .First(p => p.Id == Id);
+            return View(project);
         }
     }
 }

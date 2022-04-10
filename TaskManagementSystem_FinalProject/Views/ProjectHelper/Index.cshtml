@@ -78,9 +78,10 @@
             </td>
             <td>
                 <div>
-                @(item.ProejectAndUsers.Select(pu=>pu.AppUser).Select(A=>A.DailySalary).Sum()*((DateTime.Now.Date-item.StartDate).Days))
+                   <a asp-action="TotalCostDetails" asp-route-id=@item.Id>$@item.TotalCost()</a> 
+                
                 </div>
-                @if((item.ProejectAndUsers.Select(pu=>pu.AppUser).Select(A=>A.DailySalary).Sum()*((DateTime.Now.Date-item.StartDate).Days)) > item.Budget)
+                @if(item.TotalCost() > item.Budget)
                 {
                      
                   <p class="btn btn-outline-danger" >Exceeded!</p> 
@@ -92,8 +93,8 @@
                 {
                   <div >
                   @pu.AppUser.UserName       
-
                   </div>
+                  <div style="font-size:small">(@pu.StartDate.ToString("MM/dd/yyyy")~@pu.EndDate.ToString("MM/dd/yyyy")) </div>
                  }
             </td>
             <td>

@@ -1,0 +1,74 @@
+﻿@model Project
+
+@{
+    ViewData["Title"] = "TotalCostDetails";
+}
+
+<h1>TotalCostDetails</h1>
+<h3>Project Name : @Model.Name</h3>
+<h4>Total Cost : $@Model.TotalCost()</h4>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                UserName
+            </th>
+            <th>
+                StartDate
+            </th>
+            <th>
+                EndDate
+            </th>
+            <th>
+                DailySalary
+            </th>
+            <th>
+                Work Days
+            </th>
+            <th>
+                Cost
+            </th>
+            
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.ProejectAndUsers) {
+        <tr>
+            <td>
+               @item.AppUser.UserName
+            </td>
+            <td>
+                @item.StartDate.ToString("MM/dd/yyyy")
+            </td>
+            <td>
+                @item.EndDate.ToString("MM/dd/yyyy")
+            </td>
+            <td>
+                @item.AppUser.DailySalary
+            </td>
+            <td>
+                @if(DateTime.Today>= item.EndDate)
+                {
+                   @((item.EndDate-item.StartDate).Days+1)
+                }else
+                {
+                   @((DateTime.Today-item.StartDate).Days+1)
+                }
+                Days
+            </td>
+            <td>
+                $
+                @if(DateTime.Today>=item.EndDate)
+                {
+                    @(item.AppUser.DailySalary*((item.EndDate-item.StartDate).Days+1))   
+                }else
+                {
+                   @(item.AppUser.DailySalary*((DateTime.Today-item.StartDate).Days+1))         
+                }
+                
+             </td>
+           
+        </tr>
+}
+    </tbody>
+</table>

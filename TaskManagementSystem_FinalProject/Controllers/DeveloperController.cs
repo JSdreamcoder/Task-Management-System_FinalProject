@@ -73,9 +73,14 @@ namespace TaskManagementSystem_FinalProject.Controllers
         {
             return View();
         }
+        [AllowAnonymous]
         [HttpPost]
         public IActionResult CreateTaskNotice(int id)
         {
+            if (id == 0)
+            {
+                return RedirectToAction("Index");
+            }
             var userName = User.Identity.Name;
             ViewBag.UserName = userName;
             var user = _context.AppUser.First(u => u.UserName == userName);
@@ -119,18 +124,21 @@ namespace TaskManagementSystem_FinalProject.Controllers
                     if (number == 1)
                     {
                         newNotice.Description = $"{task.Name} dead-Line remains 1 day";
+                        _context.Notification.Add(newNotice);
                     }
                     else if (number == 0)
                     {
                         newNotice.Description = $"{task.Name} dead-Line is today";
+                        _context.Notification.Add(newNotice);
 
                     }
                     else if (number < 0)
                     {
                         newNotice.Description = $"{task.Name} dead-Line is passed";
+                        _context.Notification.Add(newNotice);
 
                     }
-                    _context.Notification.Add(newNotice);
+                    
                 }
                 
             }
@@ -208,7 +216,7 @@ namespace TaskManagementSystem_FinalProject.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditComment(int id, [Bind("Id,Name,CompletePercentage,Comment,ProjectId,AppUserId")] AppTask appTask)
+        public async Task<IActionResult> EditComment(int id, [Bind("Id,Name,CompletePercentage,Comment,ProjectId,AppUserId,DeadLine")] AppTask appTask)
         {
             if (id != appTask.Id)
             {

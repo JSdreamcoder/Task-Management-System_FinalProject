@@ -74,8 +74,8 @@ namespace TaskManagementSystem_FinalProject.Controllers
         // GET: TaskHelper/Create
         public IActionResult Create()
         {
-            ViewData["AppUserId"] = new SelectList(_context.AppUser, "Id", "Id");
-            ViewData["ProjectId"] = new SelectList(_context.Project, "Id", "Id");
+            ViewData["AppUserId"] = new SelectList(_context.AppUser, "Id", "UserName");
+            ViewData["ProjectId"] = new SelectList(_context.Project, "Id", "Name");
             int zero = 0;
             ViewBag.Zero = zero;
             return View();

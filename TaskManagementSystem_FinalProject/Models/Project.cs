@@ -18,6 +18,24 @@
             AppTasks = new HashSet<AppTask>();
             Notifications = new HashSet<Notification>();
         }
+
+        public int? TotalCost()
+        {
+            var PAs = this.ProejectAndUsers;
+            int? cost = 0;
+            if (ProejectAndUsers.Any())
+            {
+               foreach (var pa in PAs)
+               {
+                   if(pa.EndDate >= DateTime.Today)
+                       cost += pa.AppUser.DailySalary * ((DateTime.Today - pa.StartDate).Days+1);
+                   else
+                        cost += pa.AppUser.DailySalary * ((pa.EndDate - pa.StartDate).Days+1);
+                }
+            }
+            return cost;
+
+        }
     }
 
    
