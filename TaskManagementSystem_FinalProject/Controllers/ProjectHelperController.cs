@@ -131,12 +131,20 @@ namespace TaskManagementSystem_FinalProject.Controllers
             return View(notices);
         }
         [HttpPost]
-        public IActionResult Notification(int id, bool isOpen )
+        public IActionResult Notification(int id, bool isOpen)
         {
-            var notification = _context.Notification.First(n=>n.Id == id);  
-            notification.Isopen = isOpen;
-            _context.Update(notification);
-            _context.SaveChanges();
+            try
+            {
+
+                var notification = _context.Notification.First(n => n.Id == id);
+                notification.Isopen = isOpen;
+                _context.Update(notification);
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
             return RedirectToAction("Notification");
         }
         
@@ -148,32 +156,40 @@ namespace TaskManagementSystem_FinalProject.Controllers
         [HttpPost]
         public IActionResult CreateNotificationFromProject()
         {
-            //making notification with passed deadline with incomplited tasks of project
-            var today = DateTime.Now.Date;
-            var allprojectwitTasks = _context.Project.Include(p => p.AppTasks)
-                                                     .Include(p=>p.Notifications);
-            foreach (var project in allprojectwitTasks)
+            try
             {
-                var IsAllcompletedProject = project.AppTasks.Select(a => a.CompletePercentage).All(c=> c==100);
-                var newNotice = new Notification();
-                var descriptions = project.Notifications.Select(n=>n.Description);
-                if ((project.DeadLine - today).Days < 0 && IsAllcompletedProject==false)
-                {
-                    newNotice.ProjectId= project.Id;
-                    newNotice.Description = $"{project.Name} deadline was passed with some incomplete tasks";
-                    if(!descriptions.Contains(newNotice.Description))
-                       _context.Notification.Add(newNotice);
-                }
-                
-            }
 
-            //making notification with complete task or project
-            var alltasks = _context.AppTask;
-            foreach (var task in alltasks)
-            {
-                
+                //making notification with passed deadline with incomplited tasks of project
+                var today = DateTime.Now.Date;
+                var allprojectwitTasks = _context.Project.Include(p => p.AppTasks)
+                                                         .Include(p => p.Notifications);
+                foreach (var project in allprojectwitTasks)
+                {
+                    var IsAllcompletedProject = project.AppTasks.Select(a => a.CompletePercentage).All(c => c == 100);
+                    var newNotice = new Notification();
+                    var descriptions = project.Notifications.Select(n => n.Description);
+                    if ((project.DeadLine - today).Days < 0 && IsAllcompletedProject == false)
+                    {
+                        newNotice.ProjectId = project.Id;
+                        newNotice.Description = $"{project.Name} deadline was passed with some incomplete tasks";
+                        if (!descriptions.Contains(newNotice.Description))
+                            _context.Notification.Add(newNotice);
+                    }
+
+                }
+
+                //making notification with complete task or project
+                var alltasks = _context.AppTask;
+                foreach (var task in alltasks)
+                {
+
+                }
+                _context.SaveChanges();
             }
-            _context.SaveChanges();
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
             return RedirectToAction("Index");
         }
          
@@ -208,11 +224,19 @@ namespace TaskManagementSystem_FinalProject.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name,Budget,StartDate,DeadLine")] Project project)
         {
-            if (ModelState.IsValid)
+            try
             {
-                _context.Add(project);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+
+                if (ModelState.IsValid)
+                {
+                    _context.Add(project);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
             }
             return View(project);
         }
@@ -291,21 +315,29 @@ namespace TaskManagementSystem_FinalProject.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var project = _context.Project.Include(p=>p.AppTasks) 
-                                          .Include(p=>p.Notifications)
-                                          .FirstOrDefault(p=>p.Id==id);
-            foreach (var notification in project.Notifications)
+            try
             {
-                notification.ProjectId = default;
-                notification.AppTaskId = default;
+                var project = _context.Project.Include(p => p.AppTasks)
+                                      .Include(p => p.Notifications)
+                                      .FirstOrDefault(p => p.Id == id);
+                foreach (var notification in project.Notifications)
+                {
+                    notification.ProjectId = default;
+                    notification.AppTaskId = default;
+                }
+                foreach (var task in project.AppTasks)
+                {
+                    _context.AppTask.Remove(task);
+                }
+
+                _context.Project.Remove(project);
+                await _context.SaveChangesAsync();
             }
-            foreach (var task in project.AppTasks)
+            catch (Exception ex)
             {
-                _context.AppTask.Remove(task);
+                return BadRequest(ex.Message);
             }
-           
-            _context.Project.Remove(project);
-            await _context.SaveChangesAsync();
+        
             return RedirectToAction(nameof(Index));
         }
 
@@ -346,14 +378,23 @@ namespace TaskManagementSystem_FinalProject.Controllers
         public IActionResult AssignUser(int projectId, string userId, 
                                         DateTime startDate, DateTime endDate)
         {
-            var newPUser = new ProjectAndUser();
-            newPUser.ProjectId = projectId; 
-            newPUser.AppUserId = userId;
-            newPUser.StartDate = startDate;
-            newPUser.EndDate = endDate;
-            _context.ProjectAndUser.Add(newPUser);
-            _context.SaveChanges();
+            try
+            {
+                var newPUser = new ProjectAndUser();
+                newPUser.ProjectId = projectId;
+                newPUser.AppUserId = userId;
+                newPUser.StartDate = startDate;
+                newPUser.EndDate = endDate;
+                _context.ProjectAndUser.Add(newPUser);
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            
             return RedirectToAction("Index");
+         
         }
 
         public IActionResult TotalCostDetails(int Id)
