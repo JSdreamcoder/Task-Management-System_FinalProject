@@ -77,73 +77,77 @@ namespace TaskManagementSystem_FinalProject.Controllers
         [HttpPost]
         public IActionResult CreateTaskNotice(int id)
         {
-            if (id == 0)
+            try
             {
-                return RedirectToAction("Index");
+
+                var userName = User.Identity.Name;
+                ViewBag.UserName = userName;
+                var user = _context.AppUser.First(u => u.UserName == userName);
+                var userId = user.Id;
+                var applicationDbContext = _context.AppTask.Include(a => a.AppUser).Include(a => a.Project)
+                                                           .Where(t => t.AppUserId == userId);
+                var notifications = _context.Notification;
+                var listOfTaskIdinNotification = notifications.Select(n => n.AppTaskId).ToList();
+                var today = DateTime.Now.Date;
+
+
+                foreach (var task in applicationDbContext)
+                {
+                    var diffOfDates = task.DeadLine - today;
+                    var number = diffOfDates.Days;
+
+                    if (listOfTaskIdinNotification.Contains(task.Id))
+                    {
+
+                        var notice = notifications.First(n => n.AppTaskId == task.Id);
+                        if (number == 1)
+                        {
+                            notice.Description = $"{task.Name} dead-Line remains 1 day";
+
+                        }
+                        else if (number == 0)
+                        {
+                            notice.Description = $"{task.Name} dead-Line is today";
+                        }
+                        else if (number < 0)
+                        {
+                            notice.Description = $"{task.Name} dead-Line is passed";
+                        }
+                        _context.Update(notice);
+                    }
+                    else
+                    {
+
+                        var newNotice = new Notification();
+                        newNotice.AppTaskId = task.Id;
+                        if (number == 1)
+                        {
+                            newNotice.Description = $"{task.Name} dead-Line remains 1 day";
+                            _context.Notification.Add(newNotice);
+                        }
+                        else if (number == 0)
+                        {
+                            newNotice.Description = $"{task.Name} dead-Line is today";
+                            _context.Notification.Add(newNotice);
+
+                        }
+                        else if (number < 0)
+                        {
+                            newNotice.Description = $"{task.Name} dead-Line is passed";
+                            _context.Notification.Add(newNotice);
+
+                        }
+
+                    }
+
+                }
+                _context.SaveChanges();
             }
-            var userName = User.Identity.Name;
-            ViewBag.UserName = userName;
-            var user = _context.AppUser.First(u => u.UserName == userName);
-            var userId = user.Id;
-            var applicationDbContext = _context.AppTask.Include(a => a.AppUser).Include(a => a.Project)
-                                                       .Where(t => t.AppUserId == userId);
-            var notifications = _context.Notification;
-            var listOfTaskIdinNotification = notifications.Select(n=>n.AppTaskId).ToList();
-            var today = DateTime.Now.Date;
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
             
-
-            foreach (var task in applicationDbContext)
-            {
-                var diffOfDates = task.DeadLine - today;
-                var number = diffOfDates.Days;
-
-                if (listOfTaskIdinNotification.Contains(task.Id))
-                {
-
-                    var notice = notifications.First(n => n.AppTaskId == task.Id);
-                    if (number == 1)
-                    {
-                        notice.Description = $"{task.Name} dead-Line remains 1 day";
-
-                    }
-                    else if (number == 0)
-                    {
-                        notice.Description = $"{task.Name} dead-Line is today";
-                    }
-                    else if (number < 0)
-                    {
-                        notice.Description = $"{task.Name} dead-Line is passed";
-                    }
-                    _context.Update(notice);
-                }
-                else
-                {
-
-                    var newNotice = new Notification();
-                    newNotice.AppTaskId = task.Id;
-                    if (number == 1)
-                    {
-                        newNotice.Description = $"{task.Name} dead-Line remains 1 day";
-                        _context.Notification.Add(newNotice);
-                    }
-                    else if (number == 0)
-                    {
-                        newNotice.Description = $"{task.Name} dead-Line is today";
-                        _context.Notification.Add(newNotice);
-
-                    }
-                    else if (number < 0)
-                    {
-                        newNotice.Description = $"{task.Name} dead-Line is passed";
-                        _context.Notification.Add(newNotice);
-
-                    }
-                    
-                }
-                
-            }
-
-            _context.SaveChanges();
             return RedirectToAction("Index");
         }
 

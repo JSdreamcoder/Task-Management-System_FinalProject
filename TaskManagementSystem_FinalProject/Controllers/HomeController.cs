@@ -15,6 +15,7 @@ namespace TaskManagementSystem_FinalProject.Controllers
 
         public IActionResult Index()
         {
+            ViewBag.UserName = User.Identity.Name;
             return View();
         }
 
