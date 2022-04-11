@@ -45,6 +45,7 @@
                 <form asp-action="Notification" method="post">
                     <input type="hidden" name="isOpen" value="true">
                     <input type="hidden" name="id" value=@item.Id>
+                    <input type="hidden" name="nNumber" value=@ViewBag.NumOfNotice>
                     <button type="submit">Open</button>
                 </form>
             </td>

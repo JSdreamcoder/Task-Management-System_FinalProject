@@ -131,7 +131,7 @@ namespace TaskManagementSystem_FinalProject.Controllers
             return View(notices);
         }
         [HttpPost]
-        public IActionResult Notification(int id, bool isOpen)
+        public IActionResult Notification(int id, bool isOpen,int nNumber)
         {
             try
             {
@@ -145,7 +145,14 @@ namespace TaskManagementSystem_FinalProject.Controllers
             {
                 return BadRequest(ex.Message);
             }
-            return RedirectToAction("Notification");
+            int numOfNoticefromProject = 0;
+            foreach (var project in _context.Project)
+            {
+                numOfNoticefromProject += project.Notifications.Where(n => n.Isopen == false).Count();
+            }
+            ViewBag.NumOfNotice = numOfNoticefromProject;
+
+            return RedirectToAction("Notification", new {nNumber=(nNumber-1)});
         }
         
         public IActionResult CreateNotificationFromProject(int id)
