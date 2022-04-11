@@ -50,7 +50,7 @@ namespace TaskManagementSystem_FinalProject.Controllers
                 }
             }
 
-            //implement priority
+            //implement priority And pick list
             if (priority == Priority.Newest)
             {
                 ViewBag.Priority = priority;
@@ -353,22 +353,7 @@ namespace TaskManagementSystem_FinalProject.Controllers
             return _context.Project.Any(e => e.Id == id);
         }
 
-        public IActionResult NotFinishedAndPassedDeadlineTasks()
-        {
-
-            var notCompletedtasks = _context.AppTask.Include(a=>a.Project).Include(a=>a.AppUser)
-                                                    .Where(a=>a.CompletePercentage<100).ToList();
-                                        
-            var passedDeadLineTasks = new List<AppTask>();
-            foreach (var task in notCompletedtasks)
-            {
-                if ((task.DeadLine - DateTime.Now.Date).Days < 0)
-                {
-                    passedDeadLineTasks.Add(task);
-                }
-            }
-            return View(passedDeadLineTasks);
-        }
+ 
 
         public IActionResult AssignUser(int id)
         {

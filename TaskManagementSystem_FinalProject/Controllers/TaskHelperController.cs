@@ -186,6 +186,23 @@ namespace TaskManagementSystem_FinalProject.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        public IActionResult NotFinishedAndPassedDeadlineTasks()
+        {
+
+            var notCompletedtasks = _context.AppTask.Include(a => a.Project).Include(a => a.AppUser)
+                                                    .Where(a => a.CompletePercentage < 100).ToList();
+
+            var passedDeadLineTasks = new List<AppTask>();
+            foreach (var task in notCompletedtasks)
+            {
+                if ((task.DeadLine - DateTime.Now.Date).Days < 0)
+                {
+                    passedDeadLineTasks.Add(task);
+                }
+            }
+            return View(passedDeadLineTasks);
+        }
+
         private bool AppTaskExists(int id)
         {
             return _context.AppTask.Any(e => e.Id == id);
