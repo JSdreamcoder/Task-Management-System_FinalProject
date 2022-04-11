@@ -291,11 +291,19 @@ namespace TaskManagementSystem_FinalProject.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var project = _context.Project.Include(p=>p.AppTasks).FirstOrDefault(p=>p.Id==id);
+            var project = _context.Project.Include(p=>p.AppTasks) 
+                                          .Include(p=>p.Notifications)
+                                          .FirstOrDefault(p=>p.Id==id);
+            foreach (var notification in project.Notifications)
+            {
+                notification.ProjectId = default;
+                notification.AppTaskId = default;
+            }
             foreach (var task in project.AppTasks)
             {
                 _context.AppTask.Remove(task);
             }
+           
             _context.Project.Remove(project);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
